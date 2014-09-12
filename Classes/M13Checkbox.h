@@ -145,6 +145,8 @@ typedef enum {
  Sets the with of the checkbox so that all the text can fit on one line.
  */
 - (void)autoFitWidthToText;
+
+- (CGFloat)heightForCheckbox;
 /**
  Returns the shape to be displayed in the checkbox when the check state is "checked".
  
@@ -182,6 +184,11 @@ typedef enum {
 /**
  The corner radius of the box.
  */
-@property (nonatomic, assign) CGFloat radius UI_APPEARANCE_SELECTOR; 
+@property (nonatomic, assign) CGFloat radius UI_APPEARANCE_SELECTOR;
+
+/**
+ * Custom tick shape drawing block
+ */
+@property (nonatomic, copy) void (^drawingBlock)(CGContextRef, CGSize);
 
 @end

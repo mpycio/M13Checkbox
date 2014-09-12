@@ -27,6 +27,10 @@
 
 @property (nonatomic, weak) M13Checkbox *checkbox;
 @property (nonatomic, assign) BOOL selected;
+/**
+ * Custom tick shape drawing block
+ */
+@property (nonatomic, copy) void (^drawingBlock)(CGContextRef, CGSize);
 
 @end
 
@@ -107,8 +111,12 @@
     if (checkbox.checkState == M13CheckboxStateUnchecked) {
         //Do Nothing
     } else if (checkbox.checkState == M13CheckboxStateChecked) {
-        [checkColor setFill];
-        [[checkbox getDefaultShape] fill];
+        if(self.drawingBlock) {
+            self.drawingBlock(context, CGSizeMake([checkbox heightForCheckbox], [checkbox heightForCheckbox]));
+        } else {
+            [checkColor setFill];
+            [[checkbox getDefaultShape] fill];
+        }
     } else if (checkbox.checkState == M13CheckboxStateMixed) {
         UIBezierPath *mixedPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(checkbox.strokeWidth + ((boxRect.size.width - (.5 * self.frame.size.height)) * 0.5), (self.frame.size.height * .5) - ((0.09375 * self.frame.size.height) * .5), .5 * self.frame.size.height, 0.1875 * self.frame.size.height) cornerRadius:(0.09375 * self.frame.size.height)];
         [checkColor setFill];
@@ -221,6 +229,14 @@
         [self layoutSubviews];
     }
     return self;
+}
+
+- (void)setDrawingBlock:(void (^)(CGContextRef, CGSize))drawingBlock
+{
+    _drawingBlock = [drawingBlock copy];
+    if(checkView != nil) {
+        checkView.drawingBlock = [drawingBlock copy];
+    }
 }
 
 - (void)setup
