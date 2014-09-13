@@ -108,12 +108,40 @@
     disabledChecked.frame = CGRectMake(25, disabled.frame.origin.y + disabled.frame.size.height + 8, disabledChecked.frame.size.width, disabledChecked.frame.size.height);
     [self.view addSubview:disabledChecked];
     
+    //Round with custom tick drawing
+    M13Checkbox *customTick = [[M13Checkbox alloc] initWithTitle:@"Custom drawing block."];
+    customTick.frame = CGRectOffset(disabledChecked.frame, 0, disabledChecked.frame.size.height+8);
+    customTick.uncheckedColor = [UIColor colorWithRed: 0.608 green: 0.967 blue: 0.646 alpha: 1];
+    customTick.tintColor = [UIColor colorWithRed: 0.608 green: 0.967 blue: 0.646 alpha: 1];
+    customTick.strokeWidth = 0.0f;
+    customTick.checkColor = [UIColor whiteColor];
+    customTick.radius = 9.0f;
+    customTick.drawingBlock = ^void(CGContextRef context, CGSize size) {
+        
+        CGContextSetStrokeColorWithColor(context, [UIColor whiteColor].CGColor);
+        CGContextSetLineWidth(context, 3.2f);
+        CGContextMoveToPoint(context, (size.height * 0.2f), (size.height *0.5f)); //start at this point
+        CGContextAddLineToPoint(context, (size.height * 0.4f), (size.height * 0.75f)); //draw to this point
+        CGContextAddLineToPoint(context, (size.height * 0.7f), (size.height * 0.4f)); //draw to this point
+        
+        // and now draw the Path!
+        CGContextStrokePath(context);
+    };
+    [self.view addSubview:customTick];
+    
     //Custom Frame + Multiline text
-    M13Checkbox *customFrame = [[M13Checkbox alloc] initWithFrame:CGRectMake(25, disabledChecked.frame.origin.y + disabledChecked.frame.size.height + 8, 200, 100) title:@"Custom control frame and multiple lines of text." checkHeight:M13CheckboxDefaultHeight];
+    M13Checkbox *customFrame = [[M13Checkbox alloc] initWithFrame:CGRectMake(25, customTick.frame.origin.y + customTick.frame.size.height + 8, 200, 100) title:@"Custom control frame and multiple lines of text." checkHeight:M13CheckboxDefaultHeight];
     customFrame.backgroundColor = [UIColor lightGrayColor];
     customFrame.titleLabel.numberOfLines = 0;
     customFrame.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [self.view addSubview:customFrame];
+    
+
+    
+    if([self.view isKindOfClass:[UIScrollView class]]) {
+        UIScrollView *view = (UIScrollView*)self.view;
+        [view  setContentSize:CGSizeMake(self.view.bounds.size.width, customFrame.frame.origin.y + 120)];
+    }
 }
 
 - (void)didReceiveMemoryWarning
