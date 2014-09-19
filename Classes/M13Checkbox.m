@@ -180,7 +180,8 @@
 {
     self = [super initWithCoder:aDecoder];
     if (self) {
-        _checkHeight = M13CheckboxDefaultHeight;
+        //_checkHeight = M13CheckboxDefaultHeight;
+        _checkHeight = self.frame.size.height;
         [self setup];
     }
     return self;
